@@ -1,6 +1,6 @@
 @extends('layouts.Alfito')
 
-@section('title', 'Verifikasi Pembayaran | RIVOLT')
+@section('title', 'Verifikasi Pembayaran | Alfito Fitness')
 
 @section('content')
     <p class="eyebrow">ADMINISTRATION</p>

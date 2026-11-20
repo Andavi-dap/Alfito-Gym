@@ -15,14 +15,14 @@ class AdminUserSeeder extends Seeder
                 'email' => 'admin@rivolt.test',
             ],
             [
-                'name' => 'RIVOLT Admin',
+                'name' => 'Alfito Fitness Admin',
                 'password' => Hash::make('RivoltAdmin123!'),
             ]
         );
 
         // Tetapkan role secara eksplisit, bukan dari input pengguna.
         $admin->forceFill([
-            'name' => 'RIVOLT Admin',
+            'name' => 'Alfito Fitness Admin',
             'role' => 'admin',
         ])->save();
     }

@@ -1,6 +1,6 @@
 @extends('layouts.Alfito')
 
-@section('title', 'Review Pengajuan | RIVOLT')
+@section('title', 'Review Pengajuan | Alfito Fitness')
 
 @section('content')
     <p class="eyebrow">ADMINISTRATION</p>

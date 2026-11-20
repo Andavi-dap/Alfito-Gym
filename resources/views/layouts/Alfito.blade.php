@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>@yield('title', 'RIVOLT Athletic Club')</title>
+    <title>@yield('title', 'Alfito Fitness')</title>
 
     <style>
         :root {
@@ -174,22 +174,26 @@
 @endauth
 
         <a class="brand" href="/">
-            RIVOLT
-            <span>ATHLETIC CLUB</span>
+            ALFITO
+            <span>FITNESS</span>
         </a>
 
         <nav>
             @auth
                 @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.applications.index') }}">
-                        Pengajuan
-                    </a>
-                    <a href="{{ route('admin.payments.index') }}">
-                        Pembayaran
-                    </a>
+                    <a href="{{ route('admin.applications.index') }}" style="margin-right: 15px;">Pengajuan</a>
+                    <a href="{{ route('admin.payments.index') }}" style="margin-right: 15px;">Pembayaran</a>
+                    <a href="{{ route('admin.bookings.index') }}" style="margin-right: 15px;">Booking</a>
+                    <a href="{{ route('admin.locations.index') }}" style="margin-right: 15px;">Lokasi</a>
+                    <a href="{{ route('admin.trainers.index') }}" style="margin-right: 15px;">Trainer</a>
+                    <a href="{{ route('admin.programs.index') }}" style="margin-right: 15px;">Program</a>
+                    <a href="{{ route('admin.plans.index') }}">Plan</a>
                 @else
-                    <a href="{{ route('member.applications.index') }}">
+                    <a href="{{ route('member.applications.index') }}" style="margin-right: 15px;">
                         Membership Saya
+                    </a>
+                    <a href="{{ route('member.bookings.index') }}">
+                        Booking Program
                     </a>
                 @endif
             @endauth

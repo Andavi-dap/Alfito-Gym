@@ -1,6 +1,6 @@
 @extends('layouts.alfito')
 
-@section('title', 'Membership | RIVOLT')
+@section('title', 'Membership | Alfito Fitness')
 
 @section('content')
     <p class="eyebrow">EARN YOUR STRENGTH</p>

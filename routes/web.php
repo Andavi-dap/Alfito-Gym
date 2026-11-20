@@ -1,18 +1,23 @@
 <?php
 
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\TrainerController;
+use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Admin\MembershipPlanController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Member\MembershipApplicationController
     as MemberMembershipApplicationController;
 
 use App\Http\Controllers\Member\PaymentController
     as MemberPaymentController;
+use App\Http\Controllers\Member\ProgramBookingController;
 
 use App\Http\Controllers\Admin\MembershipApplicationController
     as AdminMembershipApplicationController;
 
 use App\Http\Controllers\Admin\PaymentController
     as AdminPaymentController;
+use App\Http\Controllers\Admin\ProgramBookingController as AdminProgramBookingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +35,16 @@ Route::view('/', 'pages.home')->name('home');
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+    $memberships = [];
+    $payments = [];
+
+    if ($user->role === 'member') {
+        $memberships = $user->memberships()->with('membershipPlan')->latest()->get();
+        $payments = $user->applications()->with('payments')->get()->pluck('payments')->flatten();
+    }
+
+    return view('dashboard', compact('memberships', 'payments'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
@@ -63,6 +77,10 @@ Route::middleware(['auth'])
         )
         ->whereNumber('application')
         ->name('applications.payment.store');
+
+        Route::get('/bookings', [ProgramBookingController::class, 'index'])->name('bookings.index');
+        Route::post('/bookings', [ProgramBookingController::class, 'store'])->name('bookings.store');
+        Route::delete('/bookings/{booking}', [ProgramBookingController::class, 'destroy'])->name('bookings.destroy');
     });
 
 
@@ -71,6 +89,14 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+        Route::resource('locations', LocationController::class)->except(['show']);
+        Route::resource('trainers', TrainerController::class)->except(['show']);
+        Route::resource('programs', ProgramController::class)->except(['show']);
+        Route::resource('plans', MembershipPlanController::class)->except(['show']);
+
+        Route::get('/bookings', [AdminProgramBookingController::class, 'index'])->name('bookings.index');
+        Route::patch('/bookings/{booking}/decision', [AdminProgramBookingController::class, 'update'])->name('bookings.decision');
 
         Route::get(
             '/applications',
