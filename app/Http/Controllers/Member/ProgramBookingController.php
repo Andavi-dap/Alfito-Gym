@@ -7,6 +7,7 @@ use App\Models\Program;
 use App\Models\ProgramBooking;
 use App\Models\Trainer;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ProgramBookingController extends Controller
 {
@@ -31,6 +32,43 @@ class ProgramBookingController extends Controller
         ]);
 
         $program = Program::where('is_active', true)->findOrFail($validated['program_id']);
+        $hasMembership = $request->user()->memberships()
+            ->whereNull('cancelled_at')
+            ->where('starts_at', '<=', now())
+            ->where('ends_at', '>=', now())
+            ->exists();
+
+        if (!$hasMembership) {
+            throw ValidationException::withMessages([
+                'booking' => 'Booking hanya tersedia untuk member dengan membership aktif.',
+            ]);
+        }
+
+        if (!empty($validated['trainer_id']) && !$program->trainers()->whereKey($validated['trainer_id'])->exists()) {
+            throw ValidationException::withMessages([
+                'trainer_id' => 'Trainer tidak tersedia untuk program ini.',
+            ]);
+        }
+
+        $bookingDate = $validated['booking_date'];
+        $conflict = ProgramBooking::query()
+            ->whereDate('booking_date', $bookingDate)
+            ->whereIn('status', ['pending', 'approved'])
+            ->where(function ($query) use ($validated, $request) {
+                if (!empty($validated['trainer_id'])) {
+                    $query->where('trainer_id', $validated['trainer_id']);
+                } else {
+                    $query->where('user_id', $request->user()->id)
+                        ->where('program_id', $validated['program_id']);
+                }
+            })
+            ->exists();
+
+        if ($conflict) {
+            throw ValidationException::withMessages([
+                'booking_date' => 'Jadwal booking bentrok. Pilih tanggal atau trainer lain.',
+            ]);
+        }
 
         ProgramBooking::create([
             ...$validated,

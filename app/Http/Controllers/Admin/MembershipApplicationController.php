@@ -24,7 +24,7 @@ class MembershipApplicationController extends Controller
                 'reviewer',
             ])
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('admin.applications.index', compact(
             'applications'

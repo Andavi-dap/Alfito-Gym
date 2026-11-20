@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProgramBooking;
+use App\Notifications\BookingStatusChanged;
 use Illuminate\Http\Request;
 
 class ProgramBookingController extends Controller
@@ -12,7 +13,7 @@ class ProgramBookingController extends Controller
     {
         $bookings = ProgramBooking::with(['user', 'program', 'trainer'])
             ->latest('booking_date')
-            ->get();
+            ->paginate(10);
 
         return view('admin.bookings.index', compact('bookings'));
     }
@@ -23,9 +24,10 @@ class ProgramBookingController extends Controller
             'decision' => 'required|in:approve,reject',
         ]);
 
-        $booking->update([
-            'status' => $validated['decision'] === 'approve' ? 'approved' : 'rejected',
-        ]);
+        $status = $validated['decision'] === 'approve' ? 'approved' : 'rejected';
+        $booking->update(['status' => $status]);
+        $booking->load('user');
+        $booking->user->notify(new BookingStatusChanged($status));
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking berhasil diproses.');
     }

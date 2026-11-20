@@ -25,7 +25,7 @@ class PaymentController extends Controller
                 'verifier',
             ])
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('admin.payments.index', compact(
             'payments'

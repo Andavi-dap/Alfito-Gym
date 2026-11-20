@@ -79,4 +79,6 @@
     @empty
         <p>Belum ada pengajuan membership.</p>
     @endforelse
+
+    {{ $applications->links() }}
 @endsection

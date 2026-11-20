@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\TrainerController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\MembershipPlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicLocationController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\Member\MembershipApplicationController
     as MemberMembershipApplicationController;
@@ -16,6 +17,8 @@ use App\Http\Controllers\Admin\MembershipApplicationController
 use App\Http\Controllers\Admin\PaymentController
     as AdminPaymentController;
 use App\Http\Controllers\Admin\ProgramBookingController as AdminProgramBookingController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ReportExportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +37,9 @@ Route::post('/logout', function (Request $request) {
 Route::view('/', 'pages.home')->name('home');
 
 // PUBLIC PROGRAMS
+Route::get('/locations', [PublicLocationController::class, 'index'])
+    ->name('locations.index');
+
 Route::view('/programs', 'programs.index')
     ->name('programs.index');
 
@@ -109,6 +115,8 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/bookings', [AdminProgramBookingController::class, 'index'])->name('bookings.index');
         Route::patch('/bookings/{booking}/decision', [AdminProgramBookingController::class, 'update'])->name('bookings.decision');
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/payments.csv', [ReportExportController::class, 'payments'])->name('reports.payments.csv');
 
         Route::get('/applications',
             [AdminMembershipApplicationController::class, 'index']
