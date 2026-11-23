@@ -32,6 +32,11 @@ class LocationController extends Controller
         return redirect()->route('admin.locations.index')->with('success', 'Lokasi berhasil ditambahkan.');
     }
 
+    public function show(Location $location)
+    {
+        return view('admin.locations.show', compact('location'));
+    }
+
     public function edit(Location $location)
     {
         return view('admin.locations.edit', compact('location'));

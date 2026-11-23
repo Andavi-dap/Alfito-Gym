@@ -119,6 +119,30 @@ class MembershipWorkflowService
         });
     }
 
+    public function settleGatewayPayment(int $paymentId): Payment
+    {
+        return DB::transaction(function () use ($paymentId) {
+            $payment = Payment::query()->lockForUpdate()->findOrFail($paymentId);
+            $application = MembershipApplication::query()->lockForUpdate()->findOrFail($payment->membership_application_id);
+
+            if ($payment->status !== 'verified' || $application->membership()->exists()) {
+                return $payment->refresh();
+            }
+
+            $startsAt = now();
+            Membership::create([
+                'user_id' => $application->user_id,
+                'membership_plan_id' => $application->membership_plan_id,
+                'membership_application_id' => $application->id,
+                'starts_at' => $startsAt,
+                'ends_at' => $startsAt->copy()->addMonthsNoOverflow((int) $application->duration_months_snapshot),
+            ]);
+            $application->update(['status' => 'approved']);
+
+            return $payment->refresh();
+        });
+    }
+
     public function decidePayment(
         int $paymentId,
         User $admin,

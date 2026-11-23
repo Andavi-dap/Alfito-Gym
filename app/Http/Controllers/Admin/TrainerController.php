@@ -34,6 +34,12 @@ class TrainerController extends Controller
         return redirect()->route('admin.trainers.index')->with('success', 'Trainer berhasil ditambahkan.');
     }
 
+    public function show(Trainer $trainer)
+    {
+        $trainer->load('location');
+        return view('admin.trainers.show', compact('trainer'));
+    }
+
     public function edit(Trainer $trainer)
     {
         $locations = Location::all();

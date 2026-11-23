@@ -3,7 +3,7 @@
 @section('title', 'Kelola Lokasi | Alfito Fitness')
 
 @section('content')
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="page-header">
         <div>
             <p class="eyebrow">ADMINISTRATION</p>
             <h1>Kelola Lokasi Cabang</h1>
@@ -34,6 +34,7 @@
                         <td style="padding: 10px;">{{ $loc->city }}</td>
                         <td style="padding: 10px; color: var(--muted);">{{ $loc->address }}</td>
                         <td style="padding: 10px; text-align: right;">
+                            <a href="{{ route('admin.locations.show', $loc->id) }}" style="margin-right: 10px;">Detail</a>
                             <a href="{{ route('admin.locations.edit', $loc->id) }}" style="margin-right: 10px;">Edit</a>
                             <form action="{{ route('admin.locations.destroy', $loc->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus lokasi ini?')">
                                 @csrf

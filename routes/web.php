@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\TrainerController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\MembershipPlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\PublicLocationController;
+use App\Http\Controllers\PublicProgramController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\Member\MembershipApplicationController
     as MemberMembershipApplicationController;
@@ -24,6 +26,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // LOGOUT
+Route::post('/payments/midtrans/notification', MidtransWebhookController::class)->name('payments.midtrans.notification');
+
 Route::post('/logout', function (Request $request) {
     Auth::logout();
 
@@ -40,8 +44,11 @@ Route::view('/', 'pages.home')->name('home');
 Route::get('/locations', [PublicLocationController::class, 'index'])
     ->name('locations.index');
 
-Route::view('/programs', 'programs.index')
+Route::get('/programs', [PublicProgramController::class, 'index'])
     ->name('programs.index');
+
+Route::get('/programs/{program}', [PublicProgramController::class, 'show'])
+    ->name('programs.show');
 
 // PUBLIC TRAINERS
 Route::view('/trainers', 'trainers.index')
@@ -91,6 +98,10 @@ Route::middleware(['auth'])
             [MemberMembershipApplicationController::class, 'store']
         )->name('applications.store');
 
+        Route::post('/applications/{application}/checkout',
+            [MemberMembershipApplicationController::class, 'checkout']
+        )->whereNumber('application')->name('applications.checkout');
+
         Route::post('/applications/{application}/payment',
             [MemberPaymentController::class, 'store']
         )
@@ -98,6 +109,7 @@ Route::middleware(['auth'])
         ->name('applications.payment.store');
 
         Route::get('/bookings', [ProgramBookingController::class, 'index'])->name('bookings.index');
+        Route::get('/bookings/checkout/{program}', [ProgramBookingController::class, 'checkout'])->name('bookings.checkout');
         Route::post('/bookings', [ProgramBookingController::class, 'store'])->name('bookings.store');
         Route::delete('/bookings/{booking}', [ProgramBookingController::class, 'destroy'])->name('bookings.destroy');
     });
@@ -108,10 +120,10 @@ Route::middleware(['auth', 'admin'])
     ->name('admin.')
     ->group(function () {
 
-        Route::resource('locations', LocationController::class)->except(['show']);
-        Route::resource('trainers', TrainerController::class)->except(['show']);
-        Route::resource('programs', ProgramController::class)->except(['show']);
-        Route::resource('plans', MembershipPlanController::class)->except(['show']);
+        Route::resource('locations', LocationController::class);
+        Route::resource('trainers', TrainerController::class);
+        Route::resource('programs', ProgramController::class);
+        Route::resource('plans', MembershipPlanController::class);
 
         Route::get('/bookings', [AdminProgramBookingController::class, 'index'])->name('bookings.index');
         Route::patch('/bookings/{booking}/decision', [AdminProgramBookingController::class, 'update'])->name('bookings.decision');

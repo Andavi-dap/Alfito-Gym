@@ -36,7 +36,7 @@
                         value="{{ $plan->id }}"
                     >
 
-                    <button class="btn" type="submit">
+                    <button class="btn" type="submit" style="width: 100%; margin-top: 10px;">
                         Ajukan Paket
                     </button>
                 </form>
@@ -88,6 +88,10 @@
             )
                 <hr>
 
+                @if(config('services.midtrans.client_key'))
+                    <button class="btn" type="button" onclick="startMidtransCheckout({{ $application->id }})" style="width: 100%; margin-bottom: 15px;">Bayar dengan Midtrans</button>
+                @endif
+
                 <h3>Unggah Bukti Pembayaran</h3>
 
                 <form
@@ -120,7 +124,7 @@
                         maxlength="100"
                     >
 
-                    <button class="btn" type="submit">
+                    <button class="btn" type="submit" style="width: 100%;">
                         Kirim Pembayaran
                     </button>
                 </form>
@@ -141,4 +145,21 @@
     @empty
         <p class="muted">Kamu belum memiliki pengajuan membership.</p>
     @endforelse
+@if(config('services.midtrans.client_key'))
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <script>
+        async function startMidtransCheckout(applicationId) {
+            const response = await fetch(`/member/applications/${applicationId}/checkout`, {
+                method: 'POST',
+                headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json'},
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                alert(data.message || 'Checkout gagal.');
+                return;
+            }
+            window.snap.pay(data.snap_token);
+        }
+    </script>
+@endif
 @endsection

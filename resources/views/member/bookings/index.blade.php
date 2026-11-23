@@ -27,7 +27,7 @@
                     </select>
                     <label for="date-{{ $program->id }}">Tanggal</label>
                     <input id="date-{{ $program->id }}" type="date" name="booking_date" min="{{ now()->toDateString() }}" required>
-                    <button class="btn" type="submit">Booking Sekarang</button>
+                    <button class="btn" type="submit" style="width: 100%;">Booking Sekarang</button>
                 </form>
             </div>
         @empty
@@ -46,7 +46,7 @@
                 <form action="{{ route('member.bookings.destroy', $booking) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-secondary">Batalkan Booking</button>
+                    <button type="submit" class="btn btn-secondary" style="width: 100%;">Batalkan Booking</button>
                 </form>
             @endif
         </div>

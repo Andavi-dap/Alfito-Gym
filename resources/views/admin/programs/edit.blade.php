@@ -24,6 +24,16 @@
             </div>
 
             <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Deskripsi</label>
+                <textarea name="description" rows="4" style="width: 100%;">{{ old('description', $program->description) }}</textarea>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                <div><label>Harga</label><input type="number" name="price" min="0" step="0.01" value="{{ old('price', $program->price) }}" required></div>
+                <div><label>Durasi (menit)</label><input type="number" name="duration_minutes" min="1" value="{{ old('duration_minutes', $program->duration_minutes) }}" required></div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px;">Trainer Program</label>
                 <select name="trainers[]" multiple style="min-height: 110px;">
                     @foreach($trainers as $trainer)

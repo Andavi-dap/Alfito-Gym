@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Models\MembershipPlan;
 use App\Services\MembershipWorkflowService;
+use App\Services\MidtransPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -12,7 +13,8 @@ use Illuminate\View\View;
 class MembershipApplicationController extends Controller
 {
     public function __construct(
-        private MembershipWorkflowService $workflow
+        private MembershipWorkflowService $workflow,
+        private MidtransPaymentService $midtrans
     ) {}
 
     /**
@@ -57,6 +59,13 @@ class MembershipApplicationController extends Controller
             'member.applications.index',
             compact('plans', 'applications')
         );
+    }
+
+    public function checkout(Request $request, int $application): \Illuminate\Http\JsonResponse
+    {
+        $this->ensureMember($request);
+        $record = $request->user()->applications()->whereKey($application)->where('status', 'awaiting_payment')->firstOrFail();
+        return response()->json(['snap_token' => $this->midtrans->createSnapToken($record, $request->user())]);
     }
 
     /**

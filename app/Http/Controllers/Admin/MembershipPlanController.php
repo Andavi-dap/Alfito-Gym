@@ -35,6 +35,11 @@ class MembershipPlanController extends Controller
         return redirect()->route('admin.plans.index')->with('success', 'Membership Plan berhasil ditambahkan.');
     }
 
+    public function show(MembershipPlan $plan)
+    {
+        return view('admin.plans.show', compact('plan'));
+    }
+
     public function edit(MembershipPlan $plan)
     {
         return view('admin.plans.edit', compact('plan'));

@@ -3,7 +3,7 @@
 @section('title', 'Kelola Trainer | Alfito Fitness')
 
 @section('content')
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="page-header">
         <div>
             <p class="eyebrow">ADMINISTRATION</p>
             <h1>Kelola Trainer</h1>
@@ -34,6 +34,7 @@
                         <td style="padding: 10px;">{{ $trainer->specialization }}</td>
                         <td style="padding: 10px; color: var(--muted);">{{ $trainer->location->name ?? '-' }}</td>
                         <td style="padding: 10px; text-align: right;">
+                            <a href="{{ route('admin.trainers.show', $trainer->id) }}" style="margin-right: 10px;">Detail</a>
                             <a href="{{ route('admin.trainers.edit', $trainer->id) }}" style="margin-right: 10px;">Edit</a>
                             <form action="{{ route('admin.trainers.destroy', $trainer->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus trainer ini?')">
                                 @csrf

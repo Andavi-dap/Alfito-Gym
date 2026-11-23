@@ -3,7 +3,7 @@
 @section('title', 'Kelola Membership Plan | Alfito Fitness')
 
 @section('content')
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="page-header">
         <div>
             <p class="eyebrow">ADMINISTRATION</p>
             <h1>Kelola Membership Plan</h1>
@@ -42,6 +42,7 @@
                             @endif
                         </td>
                         <td style="padding: 10px; text-align: right;">
+                            <a href="{{ route('admin.plans.show', $plan->id) }}" style="margin-right: 10px;">Detail</a>
                             <a href="{{ route('admin.plans.edit', $plan->id) }}" style="margin-right: 10px;">Edit</a>
                             <form action="{{ route('admin.plans.destroy', $plan->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus plan ini?')">
                                 @csrf

@@ -23,6 +23,14 @@ class ProgramBookingController extends Controller
         return view('member.bookings.index', compact('programs', 'trainers', 'bookings'));
     }
 
+    public function checkout(Request $request, Program $program)
+    {
+        abort_unless($program->is_active, 404);
+        $program->load('trainers');
+
+        return view('member.bookings.checkout', compact('program'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

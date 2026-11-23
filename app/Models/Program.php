@@ -14,12 +14,17 @@ class Program extends Model
         'name',
         'category',
         'is_active',
+        'description',
+        'price',
+        'duration_minutes',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'price' => 'decimal:2',
+            'duration_minutes' => 'integer',
         ];
     }
 

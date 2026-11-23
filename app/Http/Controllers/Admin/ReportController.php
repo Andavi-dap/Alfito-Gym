@@ -16,22 +16,25 @@ class ReportController extends Controller
     {
         $from = $request->date('from')?->startOfDay() ?? now()->startOfMonth();
         $to = $request->date('to')?->endOfDay() ?? now()->endOfDay();
+        $activeMemberships = Membership::query()
+            ->whereNull('cancelled_at')
+            ->where('starts_at', '<=', now())
+            ->where('ends_at', '>=', now());
         $verifiedPayments = Payment::where('status', 'verified')
             ->whereBetween('verified_at', [$from, $to]);
 
         $stats = [
-            'members' => User::where('role', 'member')->count(),
-            'active_memberships' => Membership::query()
-                ->whereNull('cancelled_at')
-                ->where('starts_at', '<=', now())
-                ->where('ends_at', '>=', now())
-                ->count(),
-            'applications' => MembershipApplication::count(),
-            'pending_applications' => MembershipApplication::where('status', 'pending')->count(),
-            'payments' => Payment::count(),
-            'pending_payments' => Payment::where('status', 'pending')->count(),
-            'bookings' => ProgramBooking::count(),
-            'pending_bookings' => ProgramBooking::where('status', 'pending')->count(),
+            'members' => (clone $activeMemberships)->distinct('user_id')->count('user_id'),
+            'active_memberships' => (clone $activeMemberships)->count(),
+            'applications' => MembershipApplication::whereBetween('created_at', [$from, $to])->count(),
+            'pending_applications' => MembershipApplication::where('status', 'pending')
+                ->whereBetween('created_at', [$from, $to])->count(),
+            'payments' => Payment::whereBetween('created_at', [$from, $to])->count(),
+            'pending_payments' => Payment::where('status', 'pending')
+                ->whereBetween('created_at', [$from, $to])->count(),
+            'bookings' => ProgramBooking::whereBetween('booking_date', [$from->toDateString(), $to->toDateString()])->count(),
+            'pending_bookings' => ProgramBooking::where('status', 'pending')
+                ->whereBetween('booking_date', [$from->toDateString(), $to->toDateString()])->count(),
             'verified_payment_count' => (clone $verifiedPayments)->count(),
             'verified_payment_total' => (clone $verifiedPayments)->sum('amount'),
         ];

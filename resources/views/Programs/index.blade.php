@@ -363,8 +363,22 @@
     <!-- PROGRAM CARDS -->
     <section class="programs-container">
         <div class="programs-grid">
+            @forelse($programs as $program)
+                <article class="program-card">
+                    <div class="program-card-content">
+                        <span class="program-tag">{{ strtoupper($program->category) }}</span>
+                        <h3>{{ $program->name }}</h3>
+                        <p>{{ $program->description ?: 'Program latihan untuk membantu mencapai target kebugaran.' }}</p>
+                        <a href="{{ route('programs.show', $program) }}">VIEW PROGRAM ↗</a>
+                    </div>
+                </article>
+            @empty
+                <p>Program aktif belum tersedia.</p>
+            @endforelse
+        </div>
+    </section>
 
-            <article class="program-card"
+    {{--
                 style="--program-image: url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85')">
                 <span class="program-number">01 / 06</span>
                 <div class="program-card-content">
@@ -432,6 +446,7 @@
 
         </div>
     </section>
+    --}}
 
     <!-- CTA -->
     <section class="programs-container">

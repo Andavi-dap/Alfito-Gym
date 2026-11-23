@@ -25,14 +25,17 @@
         h1 { margin: 0 0 14px; font-size: clamp(34px, 5vw, 60px); line-height: 1.05; }
         h2 { margin: 0 0 16px; font-size: clamp(22px, 3vw, 30px); }
         h3 { margin-top: 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; align-items: stretch; }
+         .grid > .card { display: flex; flex-direction: column; }
+         .grid > .card form:last-child { margin-top: auto; }
         .card { background: linear-gradient(145deg, rgba(30,37,44,.96), rgba(16,20,25,.96)); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 14px 35px rgba(0,0,0,.16); }
         .card:hover { border-color: #46545f; }
         .price { color: var(--accent); font-size: 28px; font-weight: 800; }
         .muted { color: var(--muted); }
         .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 17px; border: 1px solid transparent; border-radius: 9px; background: var(--accent); color: #0b0e09; font-weight: 800; cursor: pointer; text-decoration: none; transition: transform .2s, filter .2s; }
         .btn:hover { opacity: 1; filter: brightness(1.08); transform: translateY(-1px); }
-        .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+         .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+         .btn-danger { background: var(--danger); color: #180708; }
         input, select, textarea { width: 100%; margin: 7px 0 16px; padding: 12px 13px; border-radius: 9px; border: 1px solid var(--border); outline: none; background: #0d1115; color: var(--text); font: inherit; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(199,243,107,.12); }
         label { display: block; color: var(--muted); font-size: 13px; font-weight: 600; }
@@ -42,8 +45,26 @@
         .actions { display: flex; gap: 10px; flex-wrap: wrap; }
         table { overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: rgba(9,11,14,.25); }
         th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
-        th, td { border-color: var(--border) !important; }
-        @media (max-width: 760px) { .topbar { align-items: flex-start; flex-direction: column; } nav { justify-content: flex-start; } .container { width: min(100% - 28px, 1160px); padding-top: 34px; } .card { padding: 18px; } table { display: block; overflow-x: auto; white-space: nowrap; } }
+           table { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: rgba(9,11,14,.25); }
+         th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); text-align: left; }
+         th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; background: rgba(255,255,255,.02); }
+         tr:last-child td { border-bottom: 0; }
+         .page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+         .page-header h1 { margin-bottom: 0; }
+         .page-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+         .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+         .table-wrap table { width: 100%; min-width: 680px; border: 0; border-radius: 0; }
+         .form-card { max-width: 720px; }
+         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+         .form-full { grid-column: 1 / -1; }
+         nav[role="navigation"] { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 20px; color: var(--muted); font-size: 13px; }
+         nav[role="navigation"] > div { display: flex; align-items: center; gap: 6px; }
+         nav[role="navigation"] a, nav[role="navigation"] span { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); text-decoration: none; }
+         nav[role="navigation"] a:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+         nav[role="navigation"] span[aria-current="page"] { border-color: var(--accent); background: var(--accent); color: #0b0e09; font-weight: 800; }
+         nav[role="navigation"] span[aria-disabled="true"] { opacity: .45; }
+         nav[role="navigation"] svg { width: 16px; height: 16px; }
+         @media (max-width: 760px) { .topbar { align-items: flex-start; flex-direction: column; } nav { justify-content: flex-start; width: 100%; } .container { width: min(100% - 28px, 1160px); padding-top: 34px; } .card { padding: 18px; } table { display: block; overflow-x: auto; white-space: nowrap; } .page-header { align-items: flex-start; flex-direction: column; } .page-actions { width: 100%; } .form-grid { grid-template-columns: 1fr; } .form-full { grid-column: auto; } nav[role="navigation"] { align-items: flex-start; flex-direction: column; } nav[role="navigation"] > div { flex-wrap: wrap; } }
     </style>
 </head>
 
@@ -54,18 +75,7 @@
     <form method="POST" action="{{ route('logout') }}">
         @csrf
 
-        <button
-            type="submit"
-            style="
-                background: #C7F36B;
-                color: #0B0D10;
-                padding: 10px 18px;
-                border: none;
-                border-radius: 6px;
-                font-weight: bold;
-                cursor: pointer;
-            "
-        >
+            <button type="submit" class="btn">
             Logout
         </button>
     </form>

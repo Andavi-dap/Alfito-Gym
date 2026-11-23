@@ -26,6 +26,9 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:1',
             'is_active' => 'boolean',
             'trainers' => 'nullable|array',
             'trainers.*' => 'exists:trainers,id',
@@ -41,6 +44,12 @@ class ProgramController extends Controller
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil ditambahkan.');
     }
 
+    public function show(Program $program)
+    {
+        $program->load('trainers');
+        return view('admin.programs.show', compact('program'));
+    }
+
     public function edit(Program $program)
     {
         $trainers = Trainer::orderBy('name')->get();
@@ -52,6 +61,9 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:1',
             'is_active' => 'boolean',
             'trainers' => 'nullable|array',
             'trainers.*' => 'exists:trainers,id',

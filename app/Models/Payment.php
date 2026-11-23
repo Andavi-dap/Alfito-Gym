@@ -14,6 +14,10 @@ class Payment extends Model
         'membership_application_id',
         'amount',
         'method',
+        'gateway',
+        'gateway_order_id',
+        'gateway_transaction_id',
+        'gateway_payload',
         'status',
         'proof_path',
         'reference_number',
@@ -26,6 +30,7 @@ class Payment extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'gateway_payload' => 'array',
             'verified_at' => 'datetime',
         ];
     }
