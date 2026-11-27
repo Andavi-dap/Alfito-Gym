@@ -38,7 +38,10 @@ Route::post('/logout', function (Request $request) {
 })->middleware('auth')->name('logout');
 
 // PUBLIC HOMEPAGE
-Route::view('/', 'pages.home')->name('home');
+Route::get('/', function () {
+    $plans = \App\Models\MembershipPlan::where('is_active', true)->orderBy('price')->get();
+    return view('pages.home', compact('plans'));
+})->name('home');
 
 // PUBLIC PROGRAMS
 Route::get('/locations', [PublicLocationController::class, 'index'])
