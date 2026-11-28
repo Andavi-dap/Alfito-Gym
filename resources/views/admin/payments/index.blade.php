@@ -39,14 +39,28 @@
             </p>
 
             @if($payment->proof_path)
+                @php
+                    $isPdf = str_ends_with(strtolower($payment->proof_path), '.pdf');
+                @endphp
                 <p>
                     <a
                         href="{{ route('admin.payments.proof', $payment->id) }}"
                         target="_blank"
                         rel="noopener"
+                        style="display: inline-block; margin-bottom: 10px; color: var(--accent); font-weight: bold;"
                     >
-                        Buka bukti pembayaran
+                        🔍 Buka File Bukti Pembayaran ({{ $isPdf ? 'PDF' : 'Gambar' }})
                     </a>
+                    @if(!$isPdf)
+                        <div style="max-width: 300px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #000;">
+                            <img src="data:{{ in_array(strtolower(pathinfo($payment->proof_path, PATHINFO_EXTENSION)), ['jpg', 'jpeg']) ? 'image/jpeg' : 'image/png' }};base64,{{ base64_encode(Storage::disk('local')->get($payment->proof_path)) }}" alt="Bukti Pembayaran" style="width: 100%; height: auto; display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <p style="display:none; padding: 10px; color: #ff6b6b; font-size: 12px; margin:0;">Gagal memuat preview gambar.</p>
+                        </div>
+                    @else
+                        <div style="padding: 10px; background: rgba(255,255,255,.05); border-radius: 8px; font-size: 13px; color: var(--muted);">
+                            Format file PDF. Klik tautan di atas untuk melihat dokumen.
+                        </div>
+                    @endif
                 </p>
             @endif
 

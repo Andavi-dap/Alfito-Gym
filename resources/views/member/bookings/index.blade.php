@@ -6,10 +6,6 @@
     <p class="eyebrow">MEMBER AREA</p>
     <h1>Booking Program & Trainer</h1>
 
-    @if($errors->any())
-        <div class="alert error">{{ $errors->first() }}</div>
-    @endif
-
     <div class="grid">
         @forelse($programs as $program)
             <div class="card">

@@ -66,13 +66,23 @@ Route::get('/dashboard', function () {
     $user = auth()->user();
     $memberships = [];
     $payments = [];
+    $adminStats = [];
+    $recentPayments = [];
 
-    if ($user->role === 'member') {
+    if ($user->role === 'admin') {
+        $adminStats = [
+            'members' => \App\Models\User::where('role', 'member')->count(),
+            'pendingApplications' => \App\Models\MembershipApplication::whereIn('status', ['pending', 'awaiting_payment', 'awaiting_verification'])->count(),
+            'pendingPayments' => \App\Models\Payment::where('status', 'pending')->count(),
+            'revenue' => \App\Models\Payment::where('status', 'verified')->sum('amount'),
+        ];
+        $recentPayments = \App\Models\Payment::with('application.user')->latest()->limit(6)->get();
+    } else {
         $memberships = $user->memberships()->with('membershipPlan')->latest()->get();
         $payments = $user->applications()->with('payments')->get()->pluck('payments')->flatten();
     }
 
-    return view('dashboard', compact('memberships', 'payments'));
+    return view('dashboard', compact('memberships', 'payments', 'adminStats', 'recentPayments'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // PROFILE

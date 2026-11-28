@@ -70,9 +70,18 @@ class PaymentController extends Controller
             404
         );
 
-        // File hanya dapat diakses melalui route admin.
-        return response(
-            Storage::disk('local')->get($record->proof_path)
-        );
+        $contents = Storage::disk('local')->get($record->proof_path);
+        $extension = pathinfo($record->proof_path, PATHINFO_EXTENSION);
+        $mime = match (strtolower($extension)) {
+            'pdf' => 'application/pdf',
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            default => 'application/octet-stream',
+        };
+
+        return response($contents, 200, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="proof-' . $payment . '.' . $extension . '"',
+        ]);
     }
 }

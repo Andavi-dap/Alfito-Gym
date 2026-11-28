@@ -6,12 +6,6 @@
     <p class="eyebrow">MEMBER AREA</p>
     <h1>Checkout Booking Program</h1>
 
-    @if($errors->any())
-        <div class="alert error" style="background: #3a1c1c; border: 1px solid #ff6b6b; padding: 15px; margin-bottom: 20px;">
-            {{ $errors->first() }}
-        </div>
-    @endif
-
     <div class="card" style="max-width: 600px; margin-top: 20px;">
         <h2>{{ $program->name }}</h2>
         <p class="muted">Kategori: {{ $program->category }}</p>

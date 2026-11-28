@@ -32,7 +32,7 @@
         .card:hover { border-color: #46545f; }
         .price { color: var(--accent); font-size: 28px; font-weight: 800; }
         .muted { color: var(--muted); }
-        .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 17px; border: 1px solid transparent; border-radius: 9px; background: var(--accent); color: #0b0e09; font-weight: 800; cursor: pointer; text-decoration: none; transition: transform .2s, filter .2s; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 17px; border: 1px solid transparent; border-radius: 9px; background: var(--accent); color: #0b0e09; font-weight: 600; cursor: pointer; text-decoration: none; transition: transform .2s, filter .2s; }
         .btn:hover { opacity: 1; filter: brightness(1.08); transform: translateY(-1px); }
          .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
          .btn-danger { background: var(--danger); color: #180708; }
@@ -88,6 +88,7 @@
 
         <nav>
             @auth
+                <a href="{{ route('dashboard') }}" style="margin-right: 15px;">Dashboard</a>
                 @if(auth()->user()->role === 'admin')
                     <a href="{{ route('admin.applications.index') }}" style="margin-right: 15px;">Pengajuan</a>
                     <a href="{{ route('admin.payments.index') }}" style="margin-right: 15px;">Pembayaran</a>

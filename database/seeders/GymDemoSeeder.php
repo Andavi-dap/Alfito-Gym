@@ -9,24 +9,33 @@ use App\Models\Trainer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Str;﻿
 
 class GymDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $cities = ['Jakarta Pusat', 'Jakarta Selatan', 'Jakarta Barat', 'Jakarta Utara', 'Bandung', 'Surabaya', 'Semarang', 'Medan', 'Bali', 'Yogyakarta'];
-        $streets = ['Jl. Jend. Sudirman', 'Jl. Gatot Subroto', 'Jl. HR Rasuna Said', 'Jl. MH Thamrin', 'Jl. Asia Afrika', 'Jl. Diponegoro', 'Jl. Malioboro', 'Jl. Sunset Road'];
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+        Location::truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
-        $locations = [];
-        for ($i = 1; $i <= 10; $i++) {
-            $locations[] = Location::firstOrCreate([
-                'name' => "Alfito Fitness Center - Cabang {$i}"
-            ], [
-                'address' => $streets[array_rand($streets)] . " No. " . rand(1, 150),
-                'city' => $cities[array_rand($cities)],
-            ]);
-        }
+        $locations = [
+            Location::create([
+                'name' => 'Alfito Flagship SCBD',
+                'address' => 'Jl. Jend. Sudirman Kav. 52-53, SCBD',
+                'city' => 'Jakarta Selatan',
+            ]),
+            Location::create([
+                'name' => 'Alfito Elite Menteng',
+                'address' => 'Jl. HOS Cokroaminoto No. 78, Menteng',
+                'city' => 'Jakarta Pusat',
+            ]),
+            Location::create([
+                'name' => 'Alfito Premium Braga',
+                'address' => 'Jl. Braga No. 45, Asia Afrika',
+                'city' => 'Bandung',
+            ]),
+        ];
 
         $plansData = [
             ['name' => 'Silver Monthly Pass', 'price' => 300000, 'duration_months' => 1],

@@ -1,14 +1,14 @@
 @extends('layouts.public')
 
 @section('title', 'Locations | Alfito Fitness')
-@section('meta_description', 'Temukan cabang Alfito Fitness terdekat dan mulai latihan hari ini.')
+@section('meta_description', 'Temukan 3 cabang eksklusif Alfito Fitness di SCBD, Menteng, dan Braga.')
 
 @section('content')
     <section class="page-hero">
         <div class="container">
             <p class="eyebrow">ALFITO FITNESS NETWORK</p>
             <h1>Find your <span class="text-accent">strongest place.</span></h1>
-            <p class="hero-copy">Pilih lokasi latihan yang paling dekat dengan target dan rutinitasmu.</p>
+            <p class="hero-copy">Tiga lokasi premium dengan fasilitas kelas dunia siap menemani perjalanan fitnessmu.</p>
         </div>
     </section>
 
@@ -16,27 +16,38 @@
         <div class="container">
             <div class="section-heading">
                 <div>
-                    <p class="eyebrow">OUR LOCATIONS</p>
+                    <p class="eyebrow">EXCLUSIVE LOCATIONS</p>
                     <h2>Train without limits.</h2>
                 </div>
-                <p class="muted">{{ $locations->count() }} lokasi tersedia</p>
+                <p class="muted">3 Cabang Utama</p>
             </div>
 
             <div class="location-grid">
-                @forelse($locations as $location)
+                @foreach($locations as $location)
                     <article class="location-card">
-                        <div class="location-number">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</div>
-                        <h3>{{ $location->name }}</h3>
-                        <p class="location-city">{{ $location->city }}</p>
-                        <p class="muted">{{ $location->address }}</p>
-                        <div class="location-meta">
-                            <span>{{ $location->trainers->count() }} trainer</span>
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($location->address . ', ' . $location->city) }}" target="_blank" rel="noopener">Lihat peta ↗</a>
+                        <div class="location-map-wrap">
+                            <iframe 
+                                width="100%" 
+                                height="180" 
+                                style="border:0;" 
+                                loading="lazy" 
+                                allowfullscreen 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://maps.google.com/maps?q={{ urlencode($location->name . ' ' . $location->address . ' ' . $location->city) }}&t=&z=15&ie=UTF8&iwloc=&output=embed">
+                            </iframe>
+                        </div>
+                        <div class="location-content">
+                            <div class="location-number">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</div>
+                            <h3>{{ $location->name }}</h3>
+                            <p class="location-city">{{ $location->city }}</p>
+                            <p class="muted">{{ $location->address }}</p>
+                            <div class="location-meta">
+                                <span>{{ $location->trainers->count() }} Pro Trainers</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($location->name . ', ' . $location->address . ', ' . $location->city) }}" target="_blank" rel="noopener" class="btn-direction">Buka Maps ↗</a>
+                            </div>
                         </div>
                     </article>
-                @empty
-                    <div class="empty-state">Belum ada lokasi tersedia.</div>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </section>
@@ -48,15 +59,18 @@
     .hero-copy { max-width: 520px; color: var(--muted); font-size: 18px; }
     .section-space { padding: 90px 0; }
     .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 32px; }
-    .location-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .location-card { position: relative; min-height: 245px; padding: 26px; border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(145deg, #1b2228, #101419); transition: transform .2s, border-color .2s; }
+    .location-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    .location-card { overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(145deg, #1b2228, #101419); transition: transform .2s, border-color .2s; }
     .location-card:hover { transform: translateY(-4px); border-color: var(--accent); }
-    .location-number { color: var(--accent); font-weight: 800; letter-spacing: 2px; }
-    .location-card h3 { margin: 34px 0 4px; font-size: 22px; }
-    .location-city { margin: 0 0 14px; color: var(--accent); font-weight: 700; }
-    .location-meta { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
-    .location-meta a { font-weight: 700; }
-    .empty-state { padding: 30px; border: 1px dashed var(--border); color: var(--muted); }
+    .location-map-wrap { width: 100%; height: 180px; filter: grayscale(40%) contrast(120%); transition: filter .2s; }
+    .location-card:hover .location-map-wrap { filter: grayscale(0%); }
+    .location-content { padding: 26px; }
+    .location-number { color: var(--accent); font-weight: 800; letter-spacing: 2px; font-size: 14px; }
+    .location-card h3 { margin: 16px 0 4px; font-size: 22px; }
+    .location-city { margin: 0 0 10px; color: var(--accent); font-weight: 700; font-size: 15px; }
+    .location-meta { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    .btn-direction { font-weight: 700; color: var(--accent) !important; background: rgba(199,243,107,.1); padding: 6px 12px; border-radius: 8px; transition: background .2s; }
+    .btn-direction:hover { background: rgba(199,243,107,.2); }
     @media (max-width: 650px) { .page-hero { padding: 75px 0 60px; } .section-space { padding: 60px 0; } .section-heading { align-items: start; flex-direction: column; } }
 </style>
 @endpush
